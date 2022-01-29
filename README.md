@@ -2,6 +2,8 @@
 
 That example provides functionality that will help to move your data from Amazon DynamoDB Standard to DynamoDB Standard-Infrequent Access table class using DynamoDB Time to Live (TTL) and DynamoDB Streams.
 
+![diagram](./assets/diagram.png)
+
 ## Useful commands
 
  * `npm run build`   compile typescript to js
