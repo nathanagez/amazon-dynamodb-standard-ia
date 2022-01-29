@@ -3,11 +3,11 @@
 // import * as AmazonDynamodbStandardIa from '../lib/amazon-dynamodb-standard-ia-stack';
 
 // example test. To run these tests, uncomment this file along with the
-// example resource in lib/amazon-dynamodb-standard-ia-stack.ts
+// example resource in lib/root-stack.ts
 test('SQS Queue Created', () => {
 //   const app = new cdk.App();
 //     // WHEN
-//   const stack = new AmazonDynamodbStandardIa.AmazonDynamodbStandardIaStack(app, 'MyTestStack');
+//   const stack = new AmazonDynamodbStandardIa.RootStack(app, 'MyTestStack');
 //     // THEN
 //   const template = Template.fromStack(stack);
 

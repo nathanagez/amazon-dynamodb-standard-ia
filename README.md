@@ -1,4 +1,4 @@
-# amazon-dynamodb-standard-ia
+# Amazon Dynamodb Standard-IA
 
 That example provides functionality that will help to move your data from Amazon DynamoDB Standard to DynamoDB Standard-Infrequent Access table class using DynamoDB Time to Live (TTL) and DynamoDB Streams.
 
