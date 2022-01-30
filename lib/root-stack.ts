@@ -1,19 +1,28 @@
-import {Stack, StackProps} from 'aws-cdk-lib';
+import * as dynamodb from "aws-cdk-lib/aws-dynamodb"
 import {Construct} from 'constructs';
+import {Stack, StackProps} from 'aws-cdk-lib';
 import {API} from "./api-construct";
-import {DynamoDB} from "./dynamodb-construct";
+import {DynamoDBTable} from "./dynamodb-construct";
+import {DynamoDBStream} from "./dynamodb-stream-construct";
 
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
 
 export class RootStack extends Stack {
     constructor(scope: Construct, id: string, props?: StackProps) {
         super(scope, id, props);
 
-        const standardClassTable = new DynamoDB(this, 'DynamoDBStandard')
-        const standardIaClassTable = new DynamoDB(this, 'DynamoDBStandardIA')
+        const standardClassTable = new DynamoDBTable(this, 'DynamoDBStandard')
+        const standardIaClassTable = new DynamoDBTable(this, 'DynamoDBStandardIA', {
+            // tableClass: dynamodb.TableClass.STANDARD_INFREQUENT_ACCESS, -> https://github.com/aws/aws-cdk/pull/18719
+        })
         new API(this, 'API', {
-            tableName: standardClassTable.tableName,
-            tableArn: standardClassTable.arn
+            tableName: standardClassTable.table.tableName,
+            tableArn: standardClassTable.table.tableArn,
+        });
+        new DynamoDBStream(this, 'StreamHandler', {
+            tableName: standardIaClassTable.table.tableName,
+            tableArn: standardIaClassTable.table.tableArn,
+            tableStreamArn: standardClassTable.table.tableStreamArn,
+            handler: 'stream-handler.put'
         });
     }
 }

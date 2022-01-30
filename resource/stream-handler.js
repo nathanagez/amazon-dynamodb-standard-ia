@@ -2,17 +2,6 @@ const crypto = require('crypto')
 const AWS = require('aws-sdk')
 const dynamo = new AWS.DynamoDB.DocumentClient();
 const REQUIRED_ENVS = ["TABLE_NAME"]
-const SEC_IN_A_MINUTE = 60;
-
-const response = (statusCode, body) => {
-    return {
-        statusCode,
-        headers: {
-            "content-type": "application/json"
-        },
-        body
-    }
-}
 
 const put = async (event) => {
     const missing = REQUIRED_ENVS.filter((env) => !process.env[env])
@@ -21,25 +10,19 @@ const put = async (event) => {
     console.log(`EVENT: ${JSON.stringify(event, null, 2)}`)
 
     try {
-        const {details} = JSON.parse(event.body);
+        const [{dynamodb: {OldImage: deletedItem}}] = event.Records;
         const uuid = crypto.randomBytes(8).toString('hex')
-        const date = new Date();
-        date.setSeconds(date.getSeconds() + SEC_IN_A_MINUTE);
-        const ttl = Math.floor(date / 1000);
         const item = {
             id: uuid,
-            details,
-            ttl
+            archive: deletedItem
         }
-
         const params = {
             TableName: process.env.TABLE_NAME,
             Item: item
         };
-        await dynamo.put(params).promise();
-        return response(200, JSON.stringify(item, null, 2))
+        return dynamo.put(params).promise();
     } catch (e) {
-        return response(500, e.toString())
+        throw new Error(e);
     }
 }
 

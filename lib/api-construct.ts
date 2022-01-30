@@ -9,11 +9,10 @@ interface Props {
 }
 
 export class API extends Construct {
-    // Lambda with HTTP Invocation params
     constructor(scope: Construct, id: string, props: Props) {
         super(scope, id);
 
-        // TODO: Add dynamodb:PutItem permissions
+        // Permissions for our Lambda function to putItem in DynamoDB table
         const dynamoDBPolicy = new iam.PolicyStatement({
             actions: ['dynamodb:PutItem'],
             resources: [props.tableArn],
@@ -30,7 +29,6 @@ export class API extends Construct {
         requestHandler.role?.attachInlinePolicy(new iam.Policy(this, 'putItem', {
             statements: [dynamoDBPolicy]
         }))
-
         requestHandler.role?.addManagedPolicy(
             iam.ManagedPolicy.fromAwsManagedPolicyName(
                 'service-role/AWSLambdaBasicExecutionRole',
@@ -41,8 +39,6 @@ export class API extends Construct {
             handler: requestHandler,
             proxy: false
         });
-
-
         const apiIntegration = new apiGateway.LambdaIntegration(requestHandler);
         const items = api.root.addResource('items')
         const itemModel = new apiGateway.Model(this, "model-validator", {
