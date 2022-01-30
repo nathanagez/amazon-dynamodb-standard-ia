@@ -4,6 +4,7 @@ import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 
 export class DynamoDB extends Construct {
     public readonly tableName: string;
+    public readonly arn: string;
 
     constructor(scope: Construct, id: string, props?: StackProps) {
         super(scope, id);
@@ -17,5 +18,6 @@ export class DynamoDB extends Construct {
             timeToLiveAttribute: "ttl",
         });
         this.tableName = table.tableName
+        this.arn = table.tableArn
     }
 }

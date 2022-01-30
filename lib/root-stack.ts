@@ -12,7 +12,8 @@ export class RootStack extends Stack {
         const standardClassTable = new DynamoDB(this, 'DynamoDBStandard')
         const standardIaClassTable = new DynamoDB(this, 'DynamoDBStandardIA')
         new API(this, 'API', {
-            tableName: standardClassTable.tableName
+            tableName: standardClassTable.tableName,
+            tableArn: standardClassTable.arn
         });
     }
 }

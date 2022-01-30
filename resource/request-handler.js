@@ -7,6 +7,9 @@ const ONE_MINUTE_IN_SEC = 60;
 const response = (statusCode, body) => {
     return {
         statusCode,
+        headers: {
+            "content-type": "application/json"
+        },
         body
     }
 }
@@ -19,7 +22,6 @@ const put = async (event) => {
 
     try {
         const {details} = JSON.parse(event.body);
-        console.log("DETAILS", details)
         const uuid = crypto.randomBytes(8).toString('hex')
         const date = new Date();
         const seconds = date.setSeconds(date.getSeconds() + ONE_MINUTE_IN_SEC);
@@ -34,12 +36,10 @@ const put = async (event) => {
             TableName: process.env.TABLE_NAME,
             Item: item
         };
+        const result = await dynamo.put(params).promise();
+        console.log("ITEM: ", result);
 
-        console.log("PARAMS", params);
-        const {item: insertedItem} = await dynamo.put(params).promise();
-        console.log("ITEM", insertedItem)
-
-        return response(200, JSON.stringify(insertedItem, null, 2))
+        return response(200, JSON.stringify(result, null, 2))
     } catch (e) {
         return response(500, e.toString())
     }
