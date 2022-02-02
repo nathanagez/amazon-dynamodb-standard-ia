@@ -12,7 +12,7 @@ export class RootStack extends Stack {
 
         const standardClassTable = new DynamoDBTable(this, 'DynamoDBStandard')
         const standardIaClassTable = new DynamoDBTable(this, 'DynamoDBStandardIA', {
-            // tableClass: dynamodb.TableClass.STANDARD_INFREQUENT_ACCESS, -> https://github.com/aws/aws-cdk/pull/18719
+            tableClass: dynamodb.TableClass.STANDARD_INFREQUENT_ACCESS, // -> https://github.com/aws/aws-cdk/pull/18719
         })
         new API(this, 'API', {
             tableName: standardClassTable.table.tableName,
